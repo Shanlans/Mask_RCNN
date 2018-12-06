@@ -109,6 +109,15 @@ class CocoConfig(Config):
     # Number of classes (including background)
     NUM_CLASSES = 1 + 4  # COCO has 80 classes
 
+    # Number of training steps per epoch
+    # This doesn't need to match the size of the training set. Tensorboard
+    # updates are saved at the end of each epoch, so setting this to a
+    # smaller number means getting more frequent TensorBoard updates.
+    # Validation stats are also calculated at each epoch end and they
+    # might take a while, so don't set this too small to avoid spending
+    # a lot of time on validation stats.
+    STEPS_PER_EPOCH = 200
+
 
 ############################################################
 #  Dataset
@@ -320,6 +329,7 @@ def evaluate_coco(model, dataset, coco, eval_type="bbox", limit=0, image_ids=Non
         # Load image
         image = dataset.load_image(image_id)
 
+        print(dataset.image_info[image_id]['path'])
         # Run detection
         t = time.time()
         r = model.detect([image], verbose=0)[0]
@@ -337,7 +347,7 @@ def evaluate_coco(model, dataset, coco, eval_type="bbox", limit=0, image_ids=Non
         visualize.display_instances(
             image, r['rois'], r['masks'], r['class_ids'],
             dataset.class_names, r['scores'],
-            show_bbox=True, show_mask=True,
+            show_bbox=False, show_mask=False,
             title="Predictions")
         plt.savefig("{}/{}.png".format(submit_dir, dataset.image_info[image_id]["id"]))
 

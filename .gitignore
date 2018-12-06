@@ -30,7 +30,13 @@ wheels/
 .installed.cfg
 *.egg
 
-dataset/
+#Image
+annotations/
+train*/
+val*/
+test*/
+folder_merged/
+*.zip
 
 # Installer logs
 pip-log.txt
